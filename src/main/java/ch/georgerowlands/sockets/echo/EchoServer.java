@@ -26,6 +26,7 @@ public class EchoServer {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 }
