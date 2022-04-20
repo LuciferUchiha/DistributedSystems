@@ -1,4 +1,4 @@
-package ch.georgerowlands;
+package ch.georgerowlands.sockets.echo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,21 +6,17 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-public class EchoThreadPoolServer {
+public class EchoMultiThreadedServer {
     public static void main(String args[]) throws IOException {
         final int serverPort = 1234;
-        final int numberOfPools = 100;
         try (ServerSocket server = new ServerSocket(serverPort)) {
-            System.out.println("Startet Echo Server on port " + serverPort);
-            ExecutorService pool = Executors.newFixedThreadPool(numberOfPools);
+            System.out.println("Startet Echo Server at " + server.getLocalSocketAddress());
             while (true) {
                 Socket s = server.accept();
-                pool.execute(() -> {
+                Thread t = new Thread(() -> {
                     try (BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-                         PrintWriter out = new PrintWriter(s.getOutputStream(), true);
+                         PrintWriter out = new PrintWriter(s.getOutputStream(), true)
                     ) {
                         final String clientAddress = s.getInetAddress().getHostAddress() + ":" + s.getPort();
                         System.out.println("connection from " + clientAddress);
@@ -35,6 +31,7 @@ public class EchoThreadPoolServer {
                         throw new RuntimeException(e);
                     }
                 });
+                t.start();
             }
         }
     }

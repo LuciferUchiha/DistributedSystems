@@ -1,4 +1,4 @@
-package ch.georgerowlands;
+package ch.georgerowlands.sockets.echo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
